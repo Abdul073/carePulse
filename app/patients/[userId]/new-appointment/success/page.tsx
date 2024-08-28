@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { Doctors } from '@/constants';
 import { getAppointment } from '@/lib/actions/appointment.actions';
 import { formatDateTime } from '@/lib/utils';
@@ -59,6 +60,14 @@ const Seccess = async ({ params: {userId}, searchParams}: SearchParamProps) => {
                     <p>{formatDateTime(appointment.Schedule).dateTime}</p>
                 </div>
             </section>
+
+            <Button variant="outline" className='shad-primary-btn' asChild>
+                <Link href={`/patients/${userId}/new-appointment`}>
+                    New Appointment
+                </Link>
+            </Button>
+
+            <p className='copyright'>©</p>
         </div>
     </div>
   )

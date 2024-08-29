@@ -57,7 +57,7 @@ const Seccess = async ({ params: {userId}, searchParams}: SearchParamProps) => {
                         width={24}
                         alt='calendar'
                     />
-                    <p>{formatDateTime(appointment.Schedule).dateTime}</p>
+                    <p>{formatDateTime(appointment.schedule).dateTime}</p>
                 </div>
             </section>
 
@@ -67,7 +67,7 @@ const Seccess = async ({ params: {userId}, searchParams}: SearchParamProps) => {
                 </Link>
             </Button>
 
-            <p className='copyright'>©</p>
+            <p className='copyright'>© 2024 Carepulse.</p>
         </div>
     </div>
   )

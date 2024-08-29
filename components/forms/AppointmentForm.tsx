@@ -14,16 +14,19 @@ import { FormFieldType } from "./PatientForm"
 import { Doctors } from "@/constants"
 import { SelectItem } from "../ui/select"
 import Image from "next/image"
-import { CreateAppointment } from "@/lib/actions/appointment.actions"
+import { CreateAppointment, updatedAppointment } from "@/lib/actions/appointment.actions"
+import { Appointment } from "@/types/appwrite.types"
 
 
 
 
  
-export const AppointmentForm = ({ userId, patientId, type}: {
+export const AppointmentForm = ({ userId, patientId, type , appointment, setOpen}: {
     userId: string;
     patientId: string,
     type: 'create' | 'cancel' | "schedule";
+    appointment?: Appointment;
+    setOpen: (open: boolean) => void;
 }) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -60,10 +63,6 @@ export const AppointmentForm = ({ userId, patientId, type}: {
 
     try {
        if(type === 'create' && patientId) {
-
-        console.log('IAM HERE');
-        
-
         const appointmentData = {
             userId,
             patient: patientId,
@@ -75,7 +74,6 @@ export const AppointmentForm = ({ userId, patientId, type}: {
         }
         const appointment = await CreateAppointment(appointmentData)
 
-        console.log('IAM HERE');
 
 
         if(appointment) {
@@ -84,7 +82,27 @@ export const AppointmentForm = ({ userId, patientId, type}: {
                 `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
             );
         }
-       } 
+       } else {
+        const appointmentToUpdate = {
+          userId,
+          appointmentId: appointment?.$id!,
+          appointment: {
+            primaryPhysician: values?.primaryPhysician,
+            schedule: new Date(values?.schedule),
+            status: status as Status,
+            cancellationReason: values?.cancellationReason,
+          },
+          type,
+        };
+
+        const updatedAppointment = await updatedAppointment(appointmentToUpdate);
+
+        if(updatedAppointment) {
+          setOpen && setOpen(false);
+          form.reset();
+        }
+       }
+       
 
     } catch (error) {
         console.log(error);

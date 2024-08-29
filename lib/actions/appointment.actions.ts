@@ -75,7 +75,7 @@ export const getAppointment = async (appointmentId: string) => {
   }
  } 
 
-export const updatedAppointment = async ({
+export const updateAppointment = async ({
   appointmentId, userId, appointment, type
 }: UpdateAppointmentParams) => {
   try {

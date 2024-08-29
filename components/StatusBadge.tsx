@@ -8,7 +8,7 @@ const StatusBadge = ({ status }: {status: Status}) => {
     <div className={clsx('status-badge',{
         'bg-green-600': status === 'scheduled',
         'bg-blue-600': status === 'pending',
-        'bg-red-600': status === 'cancelled'
+        'bg-red-600': status === 'cancelled',
     })}>
         <Image
         src={StatusIcon[status]}

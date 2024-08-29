@@ -9,12 +9,11 @@ import SubmitButton from "../SubmitButton"
 import { useState } from "react"
 import {  getAppointmentSchema } from "@/lib/validation"
 import { useRouter } from "next/navigation"
-import { createUser } from "@/lib/actions/patient.actions"
 import { FormFieldType } from "./PatientForm"
 import { Doctors } from "@/constants"
 import { SelectItem } from "../ui/select"
 import Image from "next/image"
-import { CreateAppointment, updatedAppointment } from "@/lib/actions/appointment.actions"
+import { CreateAppointment, updateAppointment } from "@/lib/actions/appointment.actions"
 import { Appointment } from "@/types/appwrite.types"
 
 
@@ -35,16 +34,17 @@ export const AppointmentForm = ({ userId, patientId, type , appointment, setOpen
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-     primaryPhysician: "",
-     schedule: new Date(),
-     reason:"",
-     note: "",
-     cancellationReason: "",
+     primaryPhysician: appointment ? appointment.primaryPhysician : '',
+     schedule: appointment ? new Date(appointment.schedule) : new Date(),
+     reason: appointment ? appointment.reason : '',
+     note: appointment ? appointment.note : '',
+     cancellationReason: appointment ? appointment.cancellationReason : '',
     },
   })
  
   
   async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
+  
   
     setIsLoading(true);
 
@@ -54,7 +54,7 @@ export const AppointmentForm = ({ userId, patientId, type , appointment, setOpen
             status = 'scheduled';
             break;
         case 'cancel':
-            status = 'canceled'
+            status = 'cancelled'
             break;
         default:
             status = 'pending'
@@ -73,8 +73,6 @@ export const AppointmentForm = ({ userId, patientId, type , appointment, setOpen
             status: status as Status,
         }
         const appointment = await CreateAppointment(appointmentData)
-
-
 
         if(appointment) {
             form.reset();
@@ -95,7 +93,7 @@ export const AppointmentForm = ({ userId, patientId, type , appointment, setOpen
           type,
         };
 
-        const updatedAppointment = await updatedAppointment(appointmentToUpdate);
+        const updatedAppointment = await updateAppointment(appointmentToUpdate);
 
         if(updatedAppointment) {
           setOpen && setOpen(false);
@@ -130,10 +128,11 @@ export const AppointmentForm = ({ userId, patientId, type , appointment, setOpen
   return (
     <Form {...form}>
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
-        <section className="mb-12 space-y-4">
+        {type === 'create' &&  <section className="mb-12 space-y-4">
             <h1 className="header">New Appointment</h1>
             <p className="text-dark-700">Request a new appointment in 10 seconds</p>
-        </section>
+        </section> 
+        }
 
 
         {type !== 'cancel' && (

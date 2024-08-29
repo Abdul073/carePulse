@@ -36,6 +36,7 @@ const AppointmentModel = ({ type, patientId, userId, appointment}: {
       </DialogHeader>
 
         <AppointmentForm
+          type={type}
           userId={userId}
           patientId={patientId}
           appointment={appointment}
